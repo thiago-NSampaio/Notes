@@ -6,6 +6,14 @@ export const AuthContext = createContext({})
 function AuthProvider({ children }) {
     const [data, setData] = useState({})
 
+    function signOut() {
+        // Removendo as informações do local storage.
+        localStorage.removeItem("@notes:token");
+        localStorage.removeItem("@notes:user");
+
+        setData({})
+    }
+
     async function signIn({ email, password }) {
         try {
             const response = await api.post("/sessions", { email, password });
@@ -39,14 +47,14 @@ function AuthProvider({ children }) {
 
             setData({
                 token,
-                user:JSON.parse(user)
+                user:JSON.parse(user),
             })
         }
 
     },[])
 
     return (
-        <AuthContext.Provider value={{signIn, user: data.user}}>
+        <AuthContext.Provider value={{signIn, user: data.user, signOut}}>
             {children}
         </AuthContext.Provider>
     )
