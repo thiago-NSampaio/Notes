@@ -6,8 +6,18 @@ export const AuthContext = createContext({})
 function AuthProvider({ children }) {
     const [data, setData] = useState({});
 
-    async function updateProfile({user}) {
+    async function updateProfile({user, avatarFile}) {
         try {
+            if (avatarFile) {
+                // Formatando o arquivo da forma como o backend deseja;
+                const fileUploadForm = new FormData();
+                fileUploadForm.append("avatar", avatarFile)
+
+                // Enviando o avatar para a rota dele com a arquivo formatado
+                const response = await api.patch("/users/avatar", fileUploadForm);
+                user.avatar = response.data.avatar;
+            }
+
             // Update de usuario
             await api.put("/users", user);
             // Atualizando no local storage o usuário.
