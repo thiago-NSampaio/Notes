@@ -4,7 +4,26 @@ import { api } from "../services/api";
 export const AuthContext = createContext({})
 
 function AuthProvider({ children }) {
-    const [data, setData] = useState({})
+    const [data, setData] = useState({});
+
+    async function updateProfile({user}) {
+        try {
+            // Update de usuario
+            await api.put("/users", user);
+            // Atualizando no local storage o usuário.
+            localStorage.setItem("@notes:user", JSON.stringify(user));
+
+            setData({ user, token: data.token })
+            alert("Perfil atualizado")
+
+        } catch (error) {
+            if (error.response) {
+                alert(error.response.data.message);
+            } else {
+                alert("Não foi possível entrar na aplicação")
+            }
+        }
+    }
 
     function signOut() {
         // Removendo as informações do local storage.
@@ -23,7 +42,8 @@ function AuthProvider({ children }) {
             localStorage.setItem("@notes:user", JSON.stringify(user));
             localStorage.setItem("@notes:token", token);
 
-            api.defaults.headers.authorization = `Bearer ${token}`;
+            // Usando o token para autenticar na sessão.
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             setData({user, token})
 
         } catch (error) {
@@ -43,7 +63,7 @@ function AuthProvider({ children }) {
 
 
         if (token && user) {
-            api.defaults.headers.authorization = `Bearer ${token}`;
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             setData({
                 token,
@@ -54,7 +74,7 @@ function AuthProvider({ children }) {
     },[])
 
     return (
-        <AuthContext.Provider value={{signIn, user: data.user, signOut}}>
+        <AuthContext.Provider value={{signIn, user: data.user, signOut, updateProfile}}>
             {children}
         </AuthContext.Provider>
     )
