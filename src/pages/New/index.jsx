@@ -1,18 +1,25 @@
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Input";
+import { Button } from "../../components/Button";
 import { Textarea } from "../../components/TextArea";
 import { NoteItem } from "../../components/NoteItem";
 import { Section } from "../../components/Section";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Container, Form } from "./styles";
 import { useState } from "react";
+import { api } from "../../services/api";
 
 export function New() {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
   const [links, setLinks] = useState([]);
   const [newLink, setNewLink] = useState("");
 
   const [tags, setTags] = useState([]);
   const [newTag, setNewTag] = useState("");
+
+  const navigate = useNavigate()
 
   function handleAddLink() {
     setLinks(prevState => [...prevState, newLink]);
@@ -32,6 +39,33 @@ export function New() {
     setTags(prevState => prevState.filter(tag => tag !== deleted))
   }
 
+  async function handleNewNote(e) {
+    e.preventDefault()
+
+    if (!title) {
+      return alert("Digite o título da nota");
+    }
+
+    if (newLink) {
+      return alert(
+        "Você deixou um link no campo para adicionar, mas não clicou em adicionar. Clique para adicionar ou deixe o campo vazio."
+      );
+    }
+
+    if (newTag) {
+      return alert(
+        "Você deixou uma tag no campo para adicionar, mas não clicou em adicionar. Clique para adicionar ou deixe o campo vazio."
+      );
+    }
+
+    await api.post("/notes", {
+      title, description, tags, links,
+    })
+
+    alert("Nota cadastrada com sucesso.")
+    navigate("/")
+  }
+
 
   return (
     <Container>
@@ -42,9 +76,11 @@ export function New() {
             <h1>Criar Nota</h1>
             <Link to="/">Voltar</Link>
           </header>
-          <Input placeholder="Título" />
+          <Input placeholder="Título"
+            onChange={e => setTitle(e.target.value)}
+          />
 
-          <Textarea placeholder="Observações" />
+          <Textarea onChange={e => setDescription(e.target.value)} placeholder="Observações" />
 
           <Section title="Links úteis">
             {
@@ -80,6 +116,7 @@ export function New() {
               />
             </div>
           </Section>
+          <Button title="Salvar" onClick={ handleNewNote} />
         </Form>
       </main>
     </Container>
