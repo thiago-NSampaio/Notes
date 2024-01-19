@@ -1,5 +1,5 @@
 import { Container, Brand, Menu, Search, Content, NewNote } from "./styles";
-import { FiPlus, FiSearch } from "react-icons/fi";
+import { FiPlus, FiSearch, FiXOctagon } from "react-icons/fi";
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Input";
 import { ButtonText } from "../../components/ButtonText";
@@ -11,6 +11,8 @@ import { api } from "../../services/api";
 export function Home() {
   const [tags, setTags] = useState([]);
   const [tagsSelected, setTagsSelected] = useState([]);
+  const [search, setSearch] = useState("");
+  const [notes, setNotes] = useState([])
 
   useEffect(() => {
     async function fetchTags() {
@@ -24,6 +26,15 @@ export function Home() {
 
     fetchTags();
   }, []);
+
+  useEffect(() => {
+    async function fetchNotes() {
+      const response = await api.get(`/notes?title=${search}&tags=${tagsSelected}`)
+      setNotes(response.data)
+    }
+
+    fetchNotes();
+  },[tagsSelected, search])
 
   function handleTagSelected(tagName) {
     // recebe como parâmetro o nome da tag selecionada no momento
@@ -73,20 +84,15 @@ export function Home() {
       </Menu>
 
       <Search>
-        <Input placeholder="pesquisar pelo título" icon={FiSearch} />
+        <Input placeholder="pesquisar pelo título" onChange={e => setSearch(e.target.value)} icon={FiSearch} />
       </Search>
 
       <Content>
         <Section title="Minhas notas">
-          <Note
-            data={{
-              title: "React",
-              tags: [
-                { id: "1", name: "react" },
-                { id: "2", name: "node" },
-              ],
-            }}
-          />
+        {notes.map((note) => (
+        <Note key={String(note.id)} data={note} />
+      ))
+     }
         </Section>
       </Content>
       <NewNote to="/new">
