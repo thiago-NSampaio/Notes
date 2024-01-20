@@ -4,10 +4,11 @@ import { Button } from "../../components/Button";
 import { Textarea } from "../../components/TextArea";
 import { NoteItem } from "../../components/NoteItem";
 import { Section } from "../../components/Section";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Container, Form } from "./styles";
 import { useState } from "react";
 import { api } from "../../services/api";
+import { ButtonText } from "../../components/ButtonText";
 
 export function New() {
   const [title, setTitle] = useState("");
@@ -39,6 +40,10 @@ export function New() {
     setTags(prevState => prevState.filter(tag => tag !== deleted))
   }
 
+  function handleBack() {
+    navigate(-1);
+  }
+
   async function handleNewNote(e) {
     e.preventDefault()
 
@@ -63,7 +68,7 @@ export function New() {
     })
 
     alert("Nota cadastrada com sucesso.")
-    navigate("/")
+    navigate(-1)
   }
 
 
@@ -74,7 +79,7 @@ export function New() {
         <Form>
           <header>
             <h1>Criar Nota</h1>
-            <Link to="/">Voltar</Link>
+            <ButtonText titlle="voltar" onClick={handleBack } />
           </header>
           <Input placeholder="Título"
             onChange={e => setTitle(e.target.value)}

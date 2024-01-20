@@ -25,7 +25,7 @@ export function Details() {
   }, []);
 
   function handleBack() {
-    navigate("/");
+    navigate(-1);
   }
 
   async function handleRemove() {
@@ -35,7 +35,7 @@ export function Details() {
     // Se verdadeiro exclui a nota e direciona para a tela inicial.
     if (confirm) {
       await api.delete(`/notes/${params.id}`);
-      navigate("/");
+      navigate(-1);
     }
   }
 
