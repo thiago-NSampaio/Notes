@@ -21,16 +21,16 @@ export function Profile() {
 
     const navigate = useNavigate()
 
-
     async function handleUpdate(e) {
-        e.preventDefault()
-
+        e.preventDefault();
         // Criando o objeto para enviar para a função de updateProfile.
-        const user = {
+        const updated = {
             name, email, password: newPassword, old_password: oldPassword,
         }
 
-        await updateProfile({user, avatarFile})
+        const userUpdate = Object.assign(user, updated)
+
+        await updateProfile({user : userUpdate, avatarFile})
     }
 
     function handleChangeAvatar(e) {
