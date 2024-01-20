@@ -7,8 +7,10 @@ import { Section } from "../../components/Section";
 import { Note } from "../../components/Note";
 import { useEffect, useState } from "react";
 import { api } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 export function Home() {
+  const navigate = useNavigate();
   const [tags, setTags] = useState([]);
   const [tagsSelected, setTagsSelected] = useState([]);
   const [search, setSearch] = useState("");
@@ -55,6 +57,10 @@ export function Home() {
     }
   }
 
+  function handleDetails(id) {
+    navigate(`/details/${id}`)
+  }
+
   return (
     <Container>
       <Brand>
@@ -90,7 +96,7 @@ export function Home() {
       <Content>
         <Section title="Minhas notas">
         {notes.map((note) => (
-        <Note key={String(note.id)} data={note} />
+          <Note key={String(note.id)} data={note} onClick={() => handleDetails(note.id)} />
       ))
      }
         </Section>
