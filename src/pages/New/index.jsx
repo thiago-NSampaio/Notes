@@ -1,7 +1,7 @@
 import { Header } from "../../components/Header";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
-import { Textarea } from "../../components/TextArea";
+import { Textarea } from "../../components/Textarea";
 import { NoteItem } from "../../components/NoteItem";
 import { Section } from "../../components/Section";
 import { useNavigate } from "react-router-dom";
